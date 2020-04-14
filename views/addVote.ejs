@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<%- include('head') %>
+	<body>
+		
+        
+        <h2>투표 결과</h2>
+		<div>
+			<ul>
+                <li>회사 : <%=curCompany %></li>
+                <li>날짜 : <%=curDate_price %></li>
+                <li>현재가 : <%=curClosing_price %></li>
+
+				<% for (var i = 0; i < results.length; i++) {
+					   
+                       var curPredict_price = results[i]._doc.predict_price;
+                       
+
+                       %>
+                       
+                       
+                       <li>예상 내일 종가 : <%=curPredict_price %></li>
+                       
+                <% } %>	
+                <li>오른다 : <%=upup %></li>
+                <li>내린다 : <%=downdown %></li>
+			</ul>
+		</div>
+		
+	
+        <%- include('footer') %>
+	</body>
+</html>
+

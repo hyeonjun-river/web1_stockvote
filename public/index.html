@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인페이지</title>
+
+    <!-- 부트스트랩 CSS, JS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="./jquery-3.1.1.min.js"></script>
+    <script src="jquery.jsonrpc.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <script>
+        $(function () {
+            $.jsonRPC.setup({
+                endPoint: 'http://localhost:3000/api',
+                namespace: ''
+            });
+
+            $("#search_price").keyup(function (e) {
+                if (e.keyCode == 13) {
+
+                    text_delete();
+
+                    var message = $("#search_price").val();
+
+                    var method = 'search_company_price';
+                    $.jsonRPC.request(method, {
+                        id: 1001,
+                        params: [message],
+                        success: function (data) {
+                            // println('정상 응답을 받았습니다.');
+                            spinner_hide();
+                            console.dir(data);
+
+                            println(data.result[0]);
+                            $("#search_price").val(data.result[1]);  
+                            $('#cprice').attr("value", data.result[0]);
+                            $('#company_name').attr('value', data.result[1]);
+
+
+                        },
+                        error: function (data) {
+                            // println('에러 응답을 받았습니다.');
+                            spinner_hide();
+                            console.dir(data);
+
+                            println(data.error.message);
+                        }
+                    });
+
+
+                    spinner_show();
+                }
+            });
+        });
+
+        function println(data) {
+            $("#results").append('<p>' + data + '</p>');
+        }
+
+        function spinner_show() {
+            var $div = $('<div class="spinner-border" role="status"></div >');
+            $("#results").append($div);
+        }
+        function spinner_hide() {
+            if ($('.spinner-border')) {
+                $('.spinner-border').remove();
+            }
+        }
+
+        function text_delete() {
+            $('#results').find('p').remove();
+        }
+
+        function check() {
+            $("#errmessage").empty();
+            if ($("#results").children().text().length == 0) {
+                alert("종목을 검색하여 종가를 확인해주세요.")
+                                  
+                return false;
+            } else {
+                return true;
+            }
+        }
+        
+        
+        
+    </script>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <h1>Stock Vote</h1>
+    <h2>내일 주식이 오를까요? 내릴까요?</h2>
+
+    <div class="w-30 input-group mb-3" style="width : 400px">
+        <input id="search_price" type="text" class="form-control" placeholder="종목명을 검색하세요."
+            aria-label="Recipient's username" aria-describedby="button-addon2" name="company_stock">
+    </div>
+    <form id="form_stock" method="get" action="/process/vote_stock" onsubmit="return check()">
+        <p>오늘 종가 :<p>
+                <div id="results"></div>
+
+                <label><input type="radio" name='updown' value="upside" checked='checked'>오른다.</label>
+                <br>
+                <label><input type="radio" name="updown" value="downside">내린다.</label>
+                <br>
+                <input type="number" name="prePrice" placeholder="내일 예상 종가는??">
+                <br>
+                <input id="cprice" type="hidden" name="closingprice">
+                <input id="company_name" type="hidden" name="companyname">
+                <button class="m-3 btn btn-dark" type="submit">투표 결과</button>
+    </form>
+    <div id="errmessage"></div>
+
+
+
+
+
+
+</body>
+
+</html>
