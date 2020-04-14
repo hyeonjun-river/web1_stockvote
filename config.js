@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	server_port: 3000,
+	server_port: process.env.PORT,
 	db_url: 'mongodb://web1:godseller1!@ds127391.mlab.com:27391/heroku_g16gvzp6',
 	db_schemas: [
 		{file:'./stock_schema', collection:'stock', schemaName:'StockSchema', modelName:'StockModel'}
