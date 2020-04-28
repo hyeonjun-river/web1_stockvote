@@ -17,7 +17,7 @@
     "express-error-handler": "^1.1.0",
     "express-session": "^1.14.2",
     "jayson": "^3.2.0",
-    "mongoose": "^4.6.6",
+    "mongoose": "^5.7.5",
     "request": "^2.88.2",
     "serve-static": "^1.11.2"
   }
